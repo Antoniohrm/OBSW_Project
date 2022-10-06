@@ -127,8 +127,13 @@ void get_position (position, init_time_orbit, orbit_points)
 
 void exec_cmd_msg (last_cmd_msg)
 {
-	if (last_cmd_msg.cmd == SET_HEAT_CMD) {
-        heater_on = 1;
+	if ((last_cmd_msg.cmd == 1) && (last_cmd_msg.set_heater == 1)) {
+        	heater_on = 1;
+        } else if ((last_cmd_msg.cmd == 1 && (last_cmd_msg.set_heater == 0)) {
+        	heater_on = 0;
+        } else if (last_cmd_msg.cmd == 2) {
+        
+        }
 		
 }
 }        
