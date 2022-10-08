@@ -1,15 +1,15 @@
-/**********************************************************
+/********************
  *  INCLUDES
- *********************************************************/
+ *******************/
 
 #include <stdio.h>
 #include <time.h>
 
 #include "arduino_code.h"
 
-/**********************************************************
+/********************
  *  CONSTANTS
- *********************************************************/
+ *******************/
 
 #define NS_PER_S  1000000000
 
@@ -22,9 +22,9 @@
 #define ORBIT_POINTS_SIZE 20
 #define ORBIT_TIME 300.0  //sec
 
-/**********************************************************
+/********************
  *  PUBLIC STATUS (GLOBAL VARIABLES)
- **********************************************************/
+ ********************/
 
 // boolean with the status of the heater
 int heater_on = 0;
@@ -44,9 +44,9 @@ struct cmd_msg last_cmd_msg = {NO_CMD, 0};
 // next response message to be send
 struct res_msg next_res_msg = {NO_CMD, 0};
 
-/**********************************************************
+/********************
  *  PRIVATE STATUS (STATIC GLOBAL VARIABLES)
- **********************************************************/
+ ********************/
 
 // position data for the orbit
 static struct position orbit_points[ORBIT_POINTS_SIZE] = {
@@ -75,9 +75,9 @@ static struct position orbit_points[ORBIT_POINTS_SIZE] = {
 //                           AUXILIAR FUNCTIONS 
 //---------------------------------------------------------------------------
 
-/**********************************************************
+/********************
  *  Function: getClock
- *********************************************************/
+ *******************/
 double getClock()
 {
     struct timespec tp;
@@ -94,23 +94,24 @@ double getClock()
 //                           MAIN FUNCTIONS
 //---------------------------------------------------------------------------
 
-/**********************************************************
+/********************
  *  Function: get_temperature
- *********************************************************/
-void get_temperature (heater_on, sunlight_on, temperature, time_temperature)
+ *******************/
+void get_temperature ()
 {
-	double dtimetemp = getClock() - time_temperature;
-	time_temperature = getClock();
+	double previous_time_temperature = time_temperature;
+	double time _temperature = getClock();
+	double dtimetemp = time_temperature - previous_time_temperature;
 	double power = ((sunlight_on * SUNLIGHT_POWER) + (heater_on * HEATER_POWER)) - HEAT_POWER_LOSS;
 	double energy = power * dtimetemp * 1000;
 	temperature = (energy / (SHIP_SPECIFIC_HEAT * SHIP_MASS)) + temperature;
 }
 
-/**********************************************************
+/********************
  *  Function: get_position
- *********************************************************/
+ *******************/
 
-void get_position (position, init_time_orbit, orbit_points)
+void get_position ()
 {
 	double dtimeorbit = (getClock() - init_time_orbit) % ORBIT_TIME;
 	double dorbit = (dtimeorbit / ORBIT_TIME);
@@ -121,21 +122,29 @@ void get_position (position, init_time_orbit, orbit_points)
 	position = (orbit_points[pos_index_low] * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1] * (offset_ratio));
 }
 
-/**********************************************************
+/********************
  *  Function: exec_cmd_msg
- *********************************************************/
+ *******************/
 
-void exec_cmd_msg (last_cmd_msg)
+void exec_cmd_msg ()
 {
-	res_msg.cmd = last_cmd_msg.cmd;
-	if ((last_cmd_msg.cmd == 1) && (last_cmd_msg.set_heater == 1)) {
-        	heater_on = 1;
-        	res_msg.status = TRUE;
-        } else if ((last_cmd_msg.cmd == 1 && (last_cmd_msg.set_heater == 0)) {
-        	heater_on = 0;
+	if (last_cmd_msg.cmd == 1) {
+        	heater_on = last_cmd_msg.set_heater;
+        	next_res_msg.cmd = 1;
+        	next_res_msg.status = 1;
+        	}
         } else if (last_cmd_msg.cmd == 2) {
-        
+        	next_res_msg.data.sunlight_on = sunlight_on;
+        	next_res_msg.cmd = 2;
+        	next_res_msg.status = 1;
+        } else if (last_cmd_msg.cmd == 3) {
+        	next_res_msg.data.temperature = temperature;
+        	next_res_msg.cmd = 3;
+        	next_res_msg.status = 1;
+        } else if (last_cmd_msg.cmd == 4) {
+        	next_res_msg.data.position = position;
+        	next_res_msg.cmd = 4;
+        	next_res_msg.status = 1;
         }
-		
+        last_cmd_msg = {NO_CMD, 0}
 }
-}        
