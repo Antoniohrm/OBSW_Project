@@ -27,6 +27,57 @@ TEST(test_control_temperature, basic)
 }
 
 /**********************************************************
+ *  Test: send_cmd_msg -> heater
+ *********************************************************/
+// in progress, to be modified!!! 
+TEST(test_send_cmd_msg, heater) 
+{ 
+    // test 1
+    cmd = SET_HEAT_CMD;
+    send_cmd_msg();
+    ASSERT_EQ(heater_on, send_cmd_msg(SET_HEAT_CMD, 0));
+}
+
+// what about for heater off -> heater_on=0 ??
+
+
+
+/**********************************************************
+ *  Test: recv_res_msg -> errors
+ *********************************************************/
+
+TEST(test_recv_res_msg, errors) 
+{ 
+    // test 1
+    last_res_msg.cmd = SET_HEAT_CMD;
+    last_res_msg.status = 0;
+    recv_res_msg();
+    ASSERT_EQ(<ERROR>, recv_res_msg(SET_HEAT_CMD, 0));
+    
+
+    // test 2
+    last_res_msg.cmd == READ_SUN_CMD;
+    last_res_msg.status = 0;
+    recv_res_msg();
+    ASSERT_EQ(<ERROR>, recv_res_msg(READ_SUN_CMD, 0));
+
+    // test 3
+    last_res_msg.cmd == READ_TEMP_CMD;
+    last_res_msg.status = 0;
+    recv_res_msg();
+    ASSERT_EQ(<ERROR>, recv_res_msg(READ_TEMP_CMD, 0));
+
+    // test 4
+    last_res_msg.cmd == READ_POS_CMD;
+    last_res_msg.status = 0;
+    recv_res_msg();
+    ASSERT_EQ(<ERROR>, recv_res_msg(READ_POS_CMD, 0));
+    
+}
+
+
+
+/**********************************************************
  *  Funtion: main
  *********************************************************/
 
