@@ -29,17 +29,14 @@ TEST(test_control_temperature, basic)
 /**********************************************************
  *  Test: send_cmd_msg -> heater
  *********************************************************/
-// in progress, to be modified!!! 
 TEST(test_send_cmd_msg, heater) 
 { 
     // test 1
-    cmd = SET_HEAT_CMD;
-    //send_cmd_msg();
-    ASSERT_EQ(heater_on, send_cmd_msg(SET_HEAT_CMD, 0));
+    enum command cmd = SET_HEAT_CMD;
+    heater_on = 1;
+    send_cmd_msg(cmd);
+    ASSERT_EQ(1, next_cmd_msg.cmd);
 }
-
-// what about for heater off -> heater_on=0 ??
-
 
 
 /**********************************************************
