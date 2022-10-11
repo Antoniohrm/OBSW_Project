@@ -81,5 +81,5 @@ void recv_res_msg ()
 		position = last_res_msg.data.position;
 		if (last_res_msg.status != 1) {<ERROR>}
 	}
-	last_res_msg = {NO_CMD, 0};
+	last_res_msg = {0, 0};
 }

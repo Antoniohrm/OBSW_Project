@@ -146,5 +146,5 @@ void exec_cmd_msg ()
         	next_res_msg.cmd = 4;
         	next_res_msg.status = 1;
         }
-        last_cmd_msg = {NO_CMD, 0}
+        last_cmd_msg = {0, 0}
 }
