@@ -12,7 +12,7 @@ extern "C" {
 /**********************************************************
  *  Test: get_temperature
  *********************************************************/
-
+/*
 TEST(test_get_temperature, temp_fetch) 
 { 
     // test 1
@@ -21,8 +21,7 @@ TEST(test_get_temperature, temp_fetch)
     // test 2
 
 }
-
-
+*/
 
 TEST(test_exec_cmd_msg, basic) 
 { 
@@ -69,10 +68,6 @@ TEST(test_exec_cmd_msg, basic)
     ASSERT_EQ(0, last_cmd_msg.cmd);
     ASSERT_EQ(0, last_cmd_msg.set_heater);
 }
-
-/**********************************************************
- *  Funtion: main
- *********************************************************/
 
 int main(int argc, char **argv) 
 {

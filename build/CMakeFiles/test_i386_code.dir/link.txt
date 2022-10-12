@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/test_i386_code.dir/test_i386_code.cpp.o CMakeFiles/test_i386_code.dir/i386_code.c.o -o test_i386_code  lib/libgtest.a 
