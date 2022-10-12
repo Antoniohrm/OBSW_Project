@@ -78,8 +78,9 @@ TEST(test_recv_res_msg, errors)
 
     // test 5
     recv_res_msg();
-    ASSERT_EQ({0,0}, last_res_msg);
-
+    ASSERT_EQ(0, last_res_msg.cmd);
+    ASSERT_EQ(0, last_res_msg.status);
+	
 }
 
 
