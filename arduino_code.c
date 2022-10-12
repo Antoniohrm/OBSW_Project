@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include <math.h>
 
 #include "arduino_code.h"
 
@@ -13,7 +14,7 @@
 
 #define NS_PER_S  1000000000
 
-#define SHIP_SPECIFC_HEAT 0.9
+#define SHIP_SPECIFIC_HEAT 0.9
 #define SHIP_MASS 10.0  // Kg
 #define HEATER_POWER 150.0 // J/sec
 #define SUNLIGHT_POWER 50.0 // J/sec
@@ -100,7 +101,7 @@ double getClock()
 void get_temperature ()
 {
 	double previous_time_temperature = time_temperature;
-	double time _temperature = getClock();
+	double time_temperature = getClock();
 	double dtimetemp = time_temperature - previous_time_temperature;
 	double power = ((sunlight_on * SUNLIGHT_POWER) + (heater_on * HEATER_POWER)) - HEAT_POWER_LOSS;
 	double energy = power * dtimetemp * 1000;
@@ -113,19 +114,21 @@ void get_temperature ()
 
 void get_position ()
 {
-	double dtimeorbit = (getClock() - init_time_orbit) % ORBIT_TIME;
+	double dtimeorbit = fmod((getClock() - init_time_orbit), ORBIT_TIME);
 	double dorbit = (dtimeorbit / ORBIT_TIME);
 	double pos_index = dorbit * ORBIT_POINTS_SIZE;
-	int pos_index_low = int(pos_index);
+	int pos_index_low = (int) pos_index;
 	double offset_ratio = pos_index - pos_index_low;
 
-	position = (orbit_points[pos_index_low] * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1] * (offset_ratio));
+	position.x = (orbit_points[pos_index_low].x * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1].x * (offset_ratio));
+	position.y = (orbit_points[pos_index_low].y * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1].y * (offset_ratio));
+	position.z = (orbit_points[pos_index_low].z * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1].z * (offset_ratio));
 }
 
 /********************
  *  Function: exec_cmd_msg
  *******************/
-
+/*
 void exec_cmd_msg ()
 {
 	if (last_cmd_msg.cmd == 1) {
@@ -148,3 +151,4 @@ void exec_cmd_msg ()
         }
         last_cmd_msg = {0, 0}
 }
+*/
