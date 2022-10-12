@@ -24,7 +24,7 @@ TEST(test_get_temperature, temp_fetch)
 
 
 
-TEST(test_control_temperature, basic) 
+TEST(test_exec_cmd_msg, basic) 
 { 
     // test 1
     last_cmd_msg.cmd = 1;
