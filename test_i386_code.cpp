@@ -63,19 +63,22 @@ TEST(test_recv_res_msg, errors)
 
     // test 3
     last_res_msg.cmd == READ_TEMP_CMD;
-    last_res_msg.data.temperature = 1;
+    last_res_msg.data.temperature = 10;
     recv_res_msg();
-    ASSERT_EQ(1, temperature);
+    ASSERT_EQ(10, temperature);
     ASSERT_EQ(1, last_res_msg.status);
 
 
     // test 4
     last_res_msg.cmd == READ_POS_CMD;
-    last_res_msg.data.position = 1;
+    last_res_msg.data.position = {2427.050983124840, 3526.711513754840, 9708.203932499370};
     recv_res_msg();
-    ASSERT_EQ(1, position);
+    ASSERT_EQ(2427.050983124840, position.x);
+    ASSERT_EQ(3526.711513754840, position.y);
+    ASSERT_EQ(9708.203932499370, position.z);
     ASSERT_EQ(1, last_res_msg.status);
 
+	
     // test 5
     recv_res_msg();
     ASSERT_EQ(0, last_res_msg.cmd);
