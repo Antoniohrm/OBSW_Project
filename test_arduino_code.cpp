@@ -60,7 +60,10 @@ TEST(test_exec_cmd_msg, basic)
     last_cmd_msg.cmd = 4;
     position = {2427.050983124840, 3526.711513754840, 9708.203932499370};
     exec_cmd_msg();
-    ASSERT_EQ({2427.050983124840, 3526.711513754840, 9708.203932499370}, next_res_msg.data.position);
+    ASSERT_EQ(2427.050983124840, next_res_msg.data.position.x);
+    ASSERT_EQ(3526.711513754840, next_res_msg.data.position.y);
+    ASSERT_EQ(9708.203932499370, next_res_msg.data.position.z);
+    
     ASSERT_EQ(4, next_res_msg.cmd);
     ASSERT_EQ(1, next_res_msg.status);
     ASSERT_EQ(0, last_cmd_msg.cmd);

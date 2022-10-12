@@ -69,17 +69,14 @@ void send_cmd_msg (enum command cmd)
  *******************/
 void recv_res_msg ()
 {
-	if (last_res_msg.cmd == SET_HEAT_CMD) {
-		if (last_res_msg.status != 1) {<ERROR>}
-	} else if (last_res_msg.cmd == READ_SUN_CMD) {
+	if (last_res_msg.cmd == 2) {
 		sunlight_on = last_res_msg.data.sunlight_on;
-		if (last_res_msg.status != 1) {<ERROR>}
-	} else if (last_res_msg.cmd == READ_TEMP_CMD) {
+	} else if (last_res_msg.cmd == 3) {
 		temperature = last_res_msg.data.temperature;
-		if (last_res_msg.status != 1) {<ERROR>}
-	} else if (last_res_msg.cmd == READ_POS_CMD) {
+	} else if (last_res_msg.cmd == 4) {
 		position = last_res_msg.data.position;
-		if (last_res_msg.status != 1) {<ERROR>}
 	}
-	last_res_msg = {0, 0};
+	
+	last_res_msg.cmd = 0;
+	last_res_msg.status = 0;
 }

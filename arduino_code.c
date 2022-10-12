@@ -128,14 +128,13 @@ void get_position ()
 /********************
  *  Function: exec_cmd_msg
  *******************/
-/*
+
 void exec_cmd_msg ()
 {
 	if (last_cmd_msg.cmd == 1) {
         	heater_on = last_cmd_msg.set_heater;
         	next_res_msg.cmd = 1;
         	next_res_msg.status = 1;
-        	}
         } else if (last_cmd_msg.cmd == 2) {
         	next_res_msg.data.sunlight_on = sunlight_on;
         	next_res_msg.cmd = 2;
@@ -149,6 +148,7 @@ void exec_cmd_msg ()
         	next_res_msg.cmd = 4;
         	next_res_msg.status = 1;
         }
-        last_cmd_msg = {0, 0}
+        last_cmd_msg.cmd = 0;
+        last_cmd_msg.set_heater = 0;
 }
-*/
+
