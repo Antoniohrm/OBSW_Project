@@ -45,45 +45,48 @@ TEST(test_send_cmd_msg, heater)
 
 TEST(test_recv_res_msg, errors) 
 { 
+
     // test 1
-    last_res_msg.cmd = SET_HEAT_CMD;
-    recv_res_msg();
-
-    ASSERT_EQ(1, last_res_msg.status);
-    
-
-    // test 2
-    last_res_msg.cmd = READ_SUN_CMD;
+    last_res_msg.cmd = 2;
     last_res_msg.data.sunlight_on = 1;
     recv_res_msg();
 
     ASSERT_EQ(1, sunlight_on);
-    ASSERT_EQ(1, last_res_msg.status);
+    ASSERT_EQ(0, last_res_msg.status);
+    ASSERT_EQ(0, last_res_msg.cmd);
 
 
-    // test 3
-    last_res_msg.cmd == READ_TEMP_CMD;
+    // test 2
+    last_res_msg.cmd = 3;
     last_res_msg.data.temperature = 10;
     recv_res_msg();
     ASSERT_EQ(10, temperature);
-    ASSERT_EQ(1, last_res_msg.status);
+    ASSERT_EQ(0, last_res_msg.status);
+    ASSERT_EQ(0, last_res_msg.cmd);
 
 
-    // test 4
-    last_res_msg.cmd == READ_POS_CMD;
+    // test 3
+    last_res_msg.cmd = 4;
     last_res_msg.data.position = {2427.050983124840, 3526.711513754840, 9708.203932499370};
     recv_res_msg();
-    ASSERT_EQ(2427.050983124840, position.x);
-    ASSERT_EQ(3526.711513754840, position.y);
-    ASSERT_EQ(9708.203932499370, position.z);
-    ASSERT_EQ(1, last_res_msg.status);
+    EXPECT_NEAR(2427.050983124840, position.x, 0.001);
+    EXPECT_NEAR(3526.711513754840, position.y,0.001);
+    EXPECT_NEAR(9708.203932499370, position.z,0.001);
+    ASSERT_EQ(0, last_res_msg.status);
+    ASSERT_EQ(0, last_res_msg.cmd);
 
 	
-    // test 5
+    // test 4
+    last_res_msg.cmd = 0;
     recv_res_msg();
     ASSERT_EQ(0, last_res_msg.cmd);
     ASSERT_EQ(0, last_res_msg.status);
 	
+    // test 5
+    last_res_msg.cmd = 1;
+    recv_res_msg();
+    ASSERT_EQ(0, last_res_msg.cmd);
+    ASSERT_EQ(0, last_res_msg.status);
 }
 
 
