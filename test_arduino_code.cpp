@@ -12,13 +12,20 @@ extern "C" {
 /**********************************************************
  *  Test: get_temperature
  *********************************************************/
-/*
+
 TEST(test_get_temperature, temp_fetch) 
 { 
-    // test 1
-    // test 2
+    // To be executed on 13/10/2022 10:45 GMT
+    // The set previous time temperature is 13/10/2022 10:42 GMT
+    time_temperature = 1665657720000.0;
+    temperature = 0.0;
+    sunlight_on = 1;
+    heater_on = 1;
+    get_temperature();
+    // The expect near precision is the temperature change in 30"
+    EXPECT_NEAR(temperature, 1000, 167);
 }
-*/
+
 
 TEST(test_exec_cmd_msg, basic) 
 { 
