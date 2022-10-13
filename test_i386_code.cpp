@@ -36,6 +36,7 @@ TEST(test_send_cmd_msg, heater)
     heater_on = 1;
     send_cmd_msg(cmd);
     ASSERT_EQ(1, next_cmd_msg.cmd);
+    ASSERT_EQ(1, next_cmd_msg.set_heater);
 }
 
 
