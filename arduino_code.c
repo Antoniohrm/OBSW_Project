@@ -120,9 +120,9 @@ void get_position ()
 	int pos_index_low = (int) pos_index;
 	double offset_ratio = pos_index - pos_index_low;
 
-	position.x = (orbit_points[pos_index_low].x * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1].x * (offset_ratio));
-	position.y = (orbit_points[pos_index_low].y * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1].y * (offset_ratio));
-	position.z = (orbit_points[pos_index_low].z * (1 - offset_ratio)) + (orbit_points[pos_index_low + 1].z * (offset_ratio));
+	position.x = (orbit_points[pos_index_low-1].x * (1 - offset_ratio)) + (orbit_points[pos_index_low].x * (offset_ratio));
+	position.y = (orbit_points[pos_index_low-1].y * (1 - offset_ratio)) + (orbit_points[pos_index_low].y * (offset_ratio));
+	position.z = (orbit_points[pos_index_low-1].z * (1 - offset_ratio)) + (orbit_points[pos_index_low].z * (offset_ratio));
 }
 
 /********************
