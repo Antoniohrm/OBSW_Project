@@ -15,17 +15,38 @@ extern "C" {
 
 TEST(test_get_temperature, temp_fetch) 
 { 
-    // To be executed on 13/10/2022 10:45 GMT
-    // The set previous time temperature is 13/10/2022 10:42 GMT
-    time_temperature = 1665657720000.0;
+    // To be executed on 13/10/2022 11:42:15 GMT
+    // The set previous time temperature is 13/10/2022 11:39:15 GMT
+    
+    // Test temperature change with heater and sunlight on
+    time_temperature = 1665661155.0;
     temperature = 0.0;
     sunlight_on = 1;
     heater_on = 1;
     get_temperature();
     // The expect near precision is the temperature change in 30"
-    EXPECT_NEAR(temperature, 1000, 167);
+    EXPECT_NEAR(temperature, 2000, 334);
+    
+    // Test temperature change with heater and sunlight off
+    time_temperature = 1665661155.0;
+    temperature = 0.0;
+    sunlight_on = 0;
+    heater_on = 0;
+    get_temperature();
+    // The expect near precision is the temperature change in 30"
+    EXPECT_NEAR(temperature, -2000, 334);
 }
 
+TEST(test_get_position, pos_fetch)
+{
+    // To be executed on 13/10/2022 11:42:15 GMT
+    // The expect near precisions are half of the max distance of the desired points to the closest,
+    // what means around a 12.5 second margin in the test execution
+    
+    EXPECT_NEAR(position.x, -2427.050983124840, 300);
+    EXPECT_NEAR(position.y, 3526.711513754840, 1000);
+    EXPECT_NEAR(position.z, -9708.203932499370, 1000);
+}
 
 TEST(test_exec_cmd_msg, basic) 
 { 

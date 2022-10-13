@@ -103,8 +103,8 @@ void get_temperature ()
 	double previous_time_temperature = time_temperature;
 	time_temperature = getClock();
 	double dtimetemp = time_temperature - previous_time_temperature;
-	double power = ((sunlight_on * SUNLIGHT_POWER) + (heater_on * HEATER_POWER)) - HEAT_POWER_LOSS;
-	double energy = (power * dtimetemp) / 1000;
+	double power = ((sunlight_on * SUNLIGHT_POWER) + (heater_on * HEATER_POWER)) + HEAT_POWER_LOSS;
+	double energy = power * dtimetemp;
 	temperature = (energy / (SHIP_SPECIFIC_HEAT * SHIP_MASS)) + temperature;
 }
 
