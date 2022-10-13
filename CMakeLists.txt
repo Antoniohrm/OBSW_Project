@@ -1,7 +1,8 @@
+ENABLE_TESTING()
 cmake_minimum_required(VERSION 2.6)
  
 # Locate GTest
-enable_testing()
+
 add_subdirectory("/usr/src/gtest" ${CMAKE_BINARY_DIR}/gtest)
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
