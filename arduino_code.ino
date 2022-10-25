@@ -1,4 +1,3 @@
-// --------------------------------------
 // Include files
 // --------------------------------------
 #include <string.h>
@@ -12,11 +11,20 @@
 int led = 13;
 int ldr = A3;
 
+//  -------------------------------------
+//  Aux variables
+//  -------------------------------------
+
+int SC = 0;
+double starttime;
+double endtime;
+double deltatime;
+
 // --------------------------------------
 // CONSTANTS
 // --------------------------------------
 
-# define SHIP_SPECIFC_HEAT 0.9
+# define SHIP_SPECIFIC_HEAT 0.9
 # define SHIP_MASS 10.0  // Kg
 # define HEATER_POWER 150.0 // J/sec
 # define SUNLIGHT_POWER 50.0 // J/sec
@@ -244,21 +252,21 @@ void get_position ()
 void exec_cmd_msg ()
 {
   if (last_cmd_msg.cmd == 1) {
-        	heater_on = last_cmd_msg.set_heater;
-        	next_res_msg.cmd = 1;
-        	next_res_msg.status = 1;
-  		} else if (last_cmd_msg.cmd == 2) {
-        	next_res_msg.data.sunlight_on = sunlight_on;
-        	next_res_msg.cmd = 2;
-        	next_res_msg.status = 1;
+          heater_on = last_cmd_msg.set_heater;
+          next_res_msg.cmd = 1;
+          next_res_msg.status = 1;
+      } else if (last_cmd_msg.cmd == 2) {
+          next_res_msg.data.sunlight_on = sunlight_on;
+          next_res_msg.cmd = 2;
+          next_res_msg.status = 1;
         } else if (last_cmd_msg.cmd == 3) {
-        	next_res_msg.data.temperature = temperature;
-        	next_res_msg.cmd = 3;
-        	next_res_msg.status = 1;
+          next_res_msg.data.temperature = temperature;
+          next_res_msg.cmd = 3;
+          next_res_msg.status = 1;
         } else if (last_cmd_msg.cmd == 4) {
-        	next_res_msg.data.position = position;
-        	next_res_msg.cmd = 4;
-        	next_res_msg.status = 1;
+          next_res_msg.data.position = position;
+          next_res_msg.cmd = 4;
+          next_res_msg.status = 1;
         }
         last_cmd_msg.cmd = 0;
         last_cmd_msg.set_heater = 0;
@@ -293,6 +301,7 @@ void setup()
   Serial.begin(9600);
   // Declare pin mode
   pinMode(led, OUTPUT);
+  starttime = getClock();
 }
 
 // --------------------------------------
@@ -300,11 +309,36 @@ void setup()
 // --------------------------------------
 void loop()
 {
-  comm_server();
-  exec_cmd_msg ();
-  get_temperature ();
-  get_position ();
-  read_sun_sensor ();
-  set_heater ();  
-  delay(100);
+
+  switch(SC) {
+    case 0:
+      set_heater();
+      read_sun_sensor();
+      get_position();
+      get_temperature();
+    case 1:
+      set_heater();
+      read_sun_sensor();
+      comm_server();
+     case 2:
+      set_heater();
+      read_sun_sensor();
+      get_position();
+      get_temperature();
+     case 3:
+      set_heater();
+      read_sun_sensor();
+      exec_cmd_msg();
+  }
+
+  SC = (SC + 1) % 4;
+  endtime = getClock();
+  deltatime = endtime - starttime;
+  starttime = starttime + 0.05;
+
+  if (deltatime > 0.05) {
+    analogWrite(led, 50);
+  } else {
+    delayClock(0.05 - deltatime);
+  }
 }
