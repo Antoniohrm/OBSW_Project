@@ -15,7 +15,7 @@ int ldr = A3;
 //  Aux variables
 //  -------------------------------------
 
-int SC = 0;
+unsigned long int SC = 0;
 double starttime;
 double endtime;
 double deltatime;
@@ -158,7 +158,7 @@ int comm_server()
    if (command_in_process) {
       // if there is an answer send it, else error
       if (!response_ready) {
-         next_res_msg.cmd = NO_CMD;
+         next_res_msg.cmd = NO_CMD;//////////////////////
          next_res_msg.status = 1;
       }  
       // compute parity
@@ -170,8 +170,8 @@ int comm_server()
       Serial.write((unsigned char *)(&next_res_msg), sizeof(struct res_msg));
       Serial.write((unsigned char *)(&res_parity), 1);
       // reset flags and buffers
-      command_in_process = false;
-      response_ready = false;
+      command_in_process = false;/////////////////////////////////////////////////////////
+      response_ready = false;///////////////////////
       memset((unsigned char *)(&last_cmd_msg), 0, sizeof(struct cmd_msg));
       memset((unsigned char *)(&next_res_msg), 0, sizeof(struct res_msg));
    }
@@ -189,10 +189,10 @@ int comm_server()
             // set error answer
             last_cmd_msg.cmd = NO_CMD;
             last_cmd_msg.set_heater = 0;
-            command_in_process = true;
+            command_in_process = true;//////////////////////////////////////////////////
             next_res_msg.cmd = NO_CMD;
             next_res_msg.status = 2;
-            response_ready = true;
+            response_ready = true;/////////////////////////////
             cmd_parity = (unsigned char) 0;
             count = 0;
             // end loop
@@ -201,7 +201,7 @@ int comm_server()
          // finish reading msg
          cmd_parity = (unsigned char) 0;
          count = 0;
-         command_in_process = true;
+         command_in_process = true;//////////////////////////////////////
          
          break;
       } else {
@@ -251,25 +251,31 @@ void get_position ()
  *********************************************************/
 void exec_cmd_msg ()
 {
-  if (last_cmd_msg.cmd == 1) {
-          heater_on = last_cmd_msg.set_heater;
-          next_res_msg.cmd = 1;
-          next_res_msg.status = 1;
-      } else if (last_cmd_msg.cmd == 2) {
-          next_res_msg.data.sunlight_on = sunlight_on;
-          next_res_msg.cmd = 2;
-          next_res_msg.status = 1;
-        } else if (last_cmd_msg.cmd == 3) {
-          next_res_msg.data.temperature = temperature;
-          next_res_msg.cmd = 3;
-          next_res_msg.status = 1;
-        } else if (last_cmd_msg.cmd == 4) {
-          next_res_msg.data.position = position;
-          next_res_msg.cmd = 4;
-          next_res_msg.status = 1;
-        }
-        last_cmd_msg.cmd = 0;
-        last_cmd_msg.set_heater = 0;
+  if (command_in_process == true)
+  {
+	  if (last_cmd_msg.cmd == NO_CMD){
+	  	  next_res_msg.cmd = NO_CMD;
+		} else if (last_cmd_msg.cmd == SET_HEAT_CMD) {
+		  heater_on = last_cmd_msg.set_heater;
+		  next_res_msg.cmd = SET_HEAT_CMD;
+		  next_res_msg.status = 1;
+		} else if (last_cmd_msg.cmd == READ_SUN_CMD) {
+		  next_res_msg.data.sunlight_on = sunlight_on;
+		  next_res_msg.cmd = READ_SUN_CMD;
+		  next_res_msg.status = 1;
+		} else if (last_cmd_msg.cmd == READ_TEMP_CMD) {
+		  next_res_msg.data.temperature = temperature;
+		  next_res_msg.cmd = READ_TEMP_CMD;
+		  next_res_msg.status = 1;
+		} else if (last_cmd_msg.cmd == READ_POS_CMD) {
+		  next_res_msg.data.position = position;
+		  next_res_msg.cmd = READ_POS_CMD;
+		  next_res_msg.status = 1;
+		}
+		last_cmd_msg.cmd = NO_CMD;
+		last_cmd_msg.set_heater = 0;
+		response_ready = true;
+  }
 }        
 
 /**********************************************************
@@ -277,7 +283,7 @@ void exec_cmd_msg ()
  *********************************************************/
 void read_sun_sensor ()
 {
-  if (digitalRead(ldr) > 512) {
+  if (analogRead(ldr) > 512) {
     sunlight_on = 1;
   } else {
     sunlight_on = 0;
@@ -309,7 +315,6 @@ void setup()
 // --------------------------------------
 void loop()
 {
-
   switch(SC) {
     case 0:
       set_heater();
@@ -335,10 +340,9 @@ void loop()
   endtime = getClock();
   deltatime = endtime - starttime;
   starttime = starttime + 0.05;
-
   if (deltatime > 0.05) {
     analogWrite(led, 50);
   } else {
-    delayClock(0.05 - deltatime);
+    delayClock(0.05 - deltatime + 0.003);
   }
 }
