@@ -216,9 +216,9 @@ int comm_server()
    }
 }
 
-/**********************************************************
+/********************
  *  Function: get_temperature
- *********************************************************/
+ *******************/
 void get_temperature ()
 {
   double previous_time_temperature = time_temperature;
@@ -229,9 +229,9 @@ void get_temperature ()
   temperature = (energy / (SHIP_SPECIFIC_HEAT * SHIP_MASS)) + temperature;
 }
 
-/**********************************************************
+/********************
  *  Function: get_position
- *********************************************************/
+ *******************/
 
 void get_position ()
 {
@@ -246,12 +246,12 @@ void get_position ()
   position.z = (orbit_points[pos_index_low-1].z * (1 - offset_ratio)) + (orbit_points[pos_index_low].z * (offset_ratio));
 }
 
-/**********************************************************
+/********************
  *  Function: exec_cmd_msg
- *********************************************************/
+ *******************/
 void exec_cmd_msg ()
 {
-  if (command_in_process == true)
+  if ((command_in_process == true))
   {
 	  if (last_cmd_msg.cmd == NO_CMD){
 	  	  next_res_msg.cmd = NO_CMD;
@@ -272,15 +272,14 @@ void exec_cmd_msg ()
 		  next_res_msg.cmd = READ_POS_CMD;
 		  next_res_msg.status = 1;
 		}
-		last_cmd_msg.cmd = NO_CMD;
-		last_cmd_msg.set_heater = 0;
 		response_ready = true;
+    
   }
 }        
 
-/**********************************************************
+/********************
  *  Function: read_sun_sensor
- *********************************************************/
+ *******************/
 void read_sun_sensor ()
 {
   if (analogRead(ldr) > 512) {
@@ -290,9 +289,9 @@ void read_sun_sensor ()
   }
 }
 
-/**********************************************************
+/********************
  *  Function: set_heater
- *********************************************************/
+ *******************/
 void set_heater ()
 {
   digitalWrite(led, heater_on);
@@ -341,8 +340,8 @@ void loop()
   deltatime = endtime - starttime;
   starttime = starttime + 0.05;
   if (deltatime > 0.05) {
-    analogWrite(led, 50);
+    digitalWrite(led, 1);
   } else {
-    delayClock(0.05 - deltatime + 0.003);
+    delayClock(0.05 - deltatime);
   }
 }
