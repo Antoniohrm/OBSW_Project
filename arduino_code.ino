@@ -339,9 +339,4 @@ void loop()
   endtime = getClock();
   deltatime = endtime - starttime;
   starttime = starttime + 0.05;
-  if (deltatime > 0.05) {
-    digitalWrite(led, 1);
-  } else {
-    delayClock(0.05 - deltatime);
-  }
-}
+  delayClock(0.05 - deltatime);
