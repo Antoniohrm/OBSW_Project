@@ -328,12 +328,7 @@ void *controller(void *arg)
 		  }
 		  endtime = getClock();
 		  SC = (SC + 1) % 2;
-		  //if (endtime > starttime){
-			  deltatime = endtime - starttime;
-		  //}
-		  //else{
-		  //	  deltatime = 4294967290 - starttime + endtime;
-		  //}
+		  deltatime = endtime - starttime;	
 		  starttime = starttime + 2;
 
 		  delayClock(2.0 - deltatime);
