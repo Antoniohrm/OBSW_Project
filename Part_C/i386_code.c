@@ -290,7 +290,7 @@ void execute_cmd (enum command cmd)
 #endif
 
     // wait until answer is ready
-    delayClock(0.800);
+    delayClock(0.400);
 
 #ifdef ARDUINO
     //receive the answer from the slave
