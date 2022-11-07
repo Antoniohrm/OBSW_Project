@@ -1,9 +1,9 @@
-/-Uncomment //-Uncomment to compile with arduino support
+//-Uncomment to compile with arduino support
 #define ARDUINO
 
-/********************
+/**********************************************************
  *  INCLUDES
- *******************/
+ *********************************************************/
 #include <termios.h>
 #include <pthread.h>
 #include <signal.h>
@@ -33,15 +33,14 @@
 #define MIN_TEMPERATURE -10.0
 #define AVG_TEMPERATURE 40.0
 
-
 //  -------------------------------------
 //  Aux variables
 //  -------------------------------------
 
 unsigned long int SC = 0;
-unsigned long int starttime;
-unsigned long int endtime;
-unsigned long int deltatime;
+double starttime;
+double endtime;
+double deltatime;
 
 // --------------------------------------
 // Types
@@ -176,13 +175,18 @@ void recv_msg ()
     // send message to slave
     int leido=0;
     while (leido<sizeof(struct res_msg)) {
+        //printf("BEGIN: read Request: ret=%d \n", ret);
+
       ret = read(file_desc,((char *)(&last_res_msg))+leido,sizeof(struct res_msg)-leido);
       if( ret <= 0){
         printf("ERROR: read Request: ret=%d \n", ret);
         sleep(5);
         exit (-1);
+
       }
+      //printf("read Request: ret=%d \n", ret);
       leido = leido +ret;
+
     }
     for (int i=0; i<sizeof(struct res_msg); i++) {
        // compute parity (xor)
@@ -198,6 +202,7 @@ void recv_msg ()
         sleep(5);
         exit (-1);
       }
+      //printf("read Parity: ret=%d \n", ret);
     }
     if (parity != res_parity) {
         printf("ERROR: received wrong parity\n");
@@ -212,11 +217,9 @@ void recv_msg ()
 void send_cmd_msg (enum command cmd)
 {
 	next_cmd_msg.cmd = cmd;
-		if (cmd == SET_HEAT_CMD) {
-			next_cmd_msg.set_heater = heater_on;
-		}
-
-
+			if (cmd == SET_HEAT_CMD) {
+				next_cmd_msg.set_heater = heater_on;
+			}
 }
 
 // --------------------------------------
@@ -281,22 +284,21 @@ void execute_cmd (enum command cmd)
     // prepare request buffer
     send_cmd_msg (cmd);
 
-
-#if defined(ARDUINO)
+#ifdef ARDUINO
     // send message to slave
     send_msg();
 #endif
 
     // wait until answer is ready
-    delayClock(0.400);
-#if defined(ARDUINO)
+    delayClock(0.800);
+
+#ifdef ARDUINO
     //receive the answer from the slave
     recv_msg();
 #endif
 
     //parse response
     recv_res_msg ();
-
 }
 
 //-------------------------------------
@@ -304,6 +306,7 @@ void execute_cmd (enum command cmd)
 //-------------------------------------
 void *controller(void *arg)
 {
+	delayClock(2.0);
 	starttime = getClock();
 	    // Endless loop
 	   while (1) {
@@ -325,15 +328,15 @@ void *controller(void *arg)
 		  }
 		  endtime = getClock();
 		  SC = (SC + 1) % 2;
-		  if (endtime > starttime){
+		  //if (endtime > starttime){
 			  deltatime = endtime - starttime;
-		  }
-		  else{
-			  deltatime = 4294967290 - starttime + endtime;
-		  }
+		  //}
+		  //else{
+		  //	  deltatime = 4294967290 - starttime + endtime;
+		  //}
 		  starttime = starttime + 2;
 
-		  delayClock(2 - deltatime);
+		  delayClock(2.0 - deltatime);
 
 	    }
 }
@@ -376,7 +379,7 @@ rtems_task Init (rtems_task_argument ignored)
     cfmakeraw(&portSettings);
     tcsetattr(file_desc, TCSANOW, &portSettings);
 #endif
-
+    
     /* Create first thread */
     pthread_create(&thread_ctrl, NULL, controller, NULL);
     pthread_join (thread_ctrl, NULL);
@@ -395,5 +398,4 @@ rtems_task Init (rtems_task_argument ignored)
 #define CONFIGURE_MAXIMUM_POSIX_TIMERS 10
 
 #define CONFIGURE_INIT
-#include <rtems/confdefs.h>
 #include <rtems/confdefs.h>
